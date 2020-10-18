@@ -1,0 +1,66 @@
+server:
+  port: 8443
+  servlet:
+    context-path: /
+  ssl:
+    enabled: true
+    key-store: classpath:server.p12
+    key-store-password: 123456
+    key-store-type: JKS
+    key-alias: server
+
+http:
+  port: 80
+
+spring:
+  application:
+    name: XinyinHongKongCRM
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    jdbc-url: jdbc:mysql://47.93.199.61:3306/etl_citic?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    username: root
+    password: root
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+
+  messages:
+    cache-duration: 1
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  ldap:
+    urls: ldap://47.93.199.61:389
+    username: cn=Manager,c=cn
+    password: 123456
+    base: cn=Manager,c=cn
+
+
+mybatis:
+  mapper-locations: classpath*:/com/xinyin/mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    com.xinyin: info
+  config: classpath:logback-spring.xml
+
+xxl:
+  job:
+    admin:
+      addresses: http://47.93.199.61:8080/xxl-job-admin
+    executor:
+      appname: xxl-job-executor1
+      ip:
+      port: 9997
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+    accessToken:
+
+
