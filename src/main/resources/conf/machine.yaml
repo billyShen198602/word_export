@@ -1,0 +1,5 @@
+ip: 172.11.0.1
+ssh: 22
+zone: zone1
+username: TSF1
+password: tsf_1231
