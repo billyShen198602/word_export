@@ -16,35 +16,43 @@ import java.util.Map;
 
 @Slf4j
 public class TestYaml {
+    private static Gson gson = new Gson();
 
     public static void main(String[] args) {
 
 //      readJsonAndCreateYaml("conf/param.json","conf/patam123.yaml");
 
 //      yamlToJson("conf/file.yaml");
+        String generateYamlPath = System.getProperty("user.dir") + "/generate/111.yaml";
         File file = null;
+        String absolutePath = null;
+        String result = null;
+        Map map = null;
+        String yamltojson = null;
         try {
-//            file = ResourceUtils.getFile("E:\\mygithubcode\\word_export\\src\\main\\resources\\conf\\machine.yaml");
-//            file = ResourceUtils.getFile("E:\\mygithubcode\\word_export\\src\\main\\resources\\conf\\model.yaml");
-            file = ResourceUtils.getFile("classpath:\\conf\\model.yaml");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            absolutePath = ResourceUtils.getFile("classpath:\\conf\\machine.yaml").getAbsolutePath();
+//            absolutePath = ResourceUtils.getFile("classpath:\\conf\\model.yaml").getAbsolutePath();
+//            result = getJsonParam_(absolutePath);
+//            result = yamlToJson(absolutePath);
+            map = returnMapFromYaml(absolutePath);
+            result = gson.toJson(map);
+            createYaml(generateYamlPath,result);
+//            createYamlFile(generateYamlPath,map);
+            yamltojson = yamlToJson(generateYamlPath);
+        } catch (final Exception ex) {
+            log.error("异常：" + ex.getMessage() + "&&&&&&&&&&&&&&&&&");
         }
 
-        String absolutePath = file.getAbsolutePath();
 
-        String result = getJsonParam_(absolutePath, 111111, 22222222, "333333", "4444444", "1000");
-
-        System.out.println("\n" + "所有数据修改之后--1" + "\n" + result);
+        log.info("返回json----------:" + yamltojson + "---------------");
 
     }
 
 
     /**
      * 獲取并設置yaml的值
-     *
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static String getJsonParam(String yaml_url, long lte, long gte, String max, String min, String interval) {
         Map map = returnMapFromYaml(yaml_url);
         Gson gs = new Gson();
@@ -70,32 +78,11 @@ public class TestYaml {
         return gs.toJson(map);
     }
 
-    public static String getJsonParam_(String yaml_url, long lte, long gte, String max, String min, String interval) {
-        Map<String,Object> map = returnMapFromYaml(yaml_url);
+    public static String getJsonParam_(String yaml_url) {
+        Map<String, Object> map = returnMapFromYaml(yaml_url);
 
         Gson gs = new Gson();
         String jsonString = gs.toJson(map);
-//        Map map1 = (Map) map.get("tsf-mysql");
-//        String vip = (String) map1.get("vip");
-//        String ip = (String) map1.get("ip");
-//        String user = (String) map1.get("user");
-//        String password = (String) map1.get("password");
-//        String port = (String) map1.get("port");
-//        String is_master = (String) map1.get("is_master");
-//        Model model = new Model(vip, ip, user, password, port, is_master);
-
-        // 设置最后一次更新的起止时间
-//        String ip = (String) map.get("ip");
-//        String ssh = (String) map.get("ssh");
-//        String username = (String) map.get("username");
-//        String password = (String) map.get("password");
-//        Machine machine = new Machine();
-//        machine.setIp(ip);
-//        machine.setPassword(password);
-//        machine.setSsh(ssh);
-//        machine.setUsername(username);
-//        String jsonString = gs.toJson(machine);
-//        String jsonString = JSON.toJSONString(machine);
         log.info("(((((((((((((((((((" + jsonString + "))))))))))))))))))))");
         Map map1 = gs.fromJson(jsonString, Map.class);
         return jsonString;
@@ -104,10 +91,10 @@ public class TestYaml {
     /**
      * 讀取json并生成yaml
      */
-    public static void readJsonAndCreateYaml(String json_url,String yaml_url) {
+    public static void readJsonAndCreateYaml(String json_url, String yaml_url) {
         try {
             String param = readJson(json_url);
-            createYaml(yaml_url,param);
+            createYaml(yaml_url, param);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,30 +102,32 @@ public class TestYaml {
 
     /**
      * 將json轉化為yaml格式并生成yaml文件
+     *
      * @param jsonString
      * @return
      * @throws JsonProcessingException
      * @throws IOException
      */
     @SuppressWarnings("unchecked")
-    public static void createYaml(String yaml_url,String jsonString) throws JsonProcessingException, IOException {
+    public static void createYaml(String yaml_url, String jsonString) throws JsonProcessingException, IOException {
         // parse JSON
         JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
         // save it as YAML
         String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
 
         Yaml yaml = new Yaml();
-        Map<String,Object> map = (Map<String, Object>) yaml.load(jsonAsYaml);
+        Map<String, Object> map = (Map<String, Object>) yaml.load(jsonAsYaml);
 
         createYamlFile(yaml_url, map);
     }
 
     /**
      * 将数据写入yaml文件
-     * @param url yaml文件路径
+     *
+     * @param url  yaml文件路径
      * @param data 需要写入的数据
      */
-    public static void createYamlFile(String url,Map<String, Object> data){
+    public static void createYamlFile(String url, Map<String, Object> data) {
         Yaml yaml = new Yaml();
         FileWriter writer;
         try {
@@ -171,7 +160,7 @@ public class TestYaml {
 
     /**
      * 方法一
-     *
+     * <p>
      * 讀取yaml生成Map并返回
      *
      * @return
@@ -191,8 +180,9 @@ public class TestYaml {
 
     /**
      * 方法二
-     *
+     * <p>
      * 读取yaml的内容并转为map
+     *
      * @param yaml_url
      * @return
      */
@@ -230,9 +220,9 @@ public class TestYaml {
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }
+        log.info("&&&&&&&&&&&&&&&&&&&&&" + gs.toJson(loaded));
         return gs.toJson(loaded);
     }
-
 
 
 //  /**

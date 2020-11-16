@@ -1,0 +1,5 @@
+ip: {{ip}}
+ssh: {{ssh}}
+zone: {{zone}}
+username: {{username}}
+password: {{password}}

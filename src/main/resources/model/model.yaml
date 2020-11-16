@@ -1,0 +1,7 @@
+tsf-mysql:
+  vip: 10.10.12.12
+  ip: 172.0.0.1
+  user: root
+  password: Tsf12345
+  port: 22
+  is_master: true
